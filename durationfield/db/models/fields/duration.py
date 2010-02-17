@@ -2,9 +2,6 @@
 from datetime import timedelta
 from durationfield.forms.fields import DurationField as FDurationField
 from django.db.models.fields import Field
-from django.core.exceptions import ValidationError
-from django.db import connection
-from django.utils import timestring
 
 class DurationField(Field):
     def __init__(self, *args, **kwargs):

@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
+from django.forms.util import flatatt
+from django.forms.widgets import TextInput
 from django.utils.translation import ugettext
 from django.utils.encoding import StrAndUnicode, force_unicode
 from django.utils.safestring import mark_safe
-from django.utils.timestring import from_timedelta
 from django.utils import datetime_safe, formats
-from datetime import time
-from datetime import time, timedelta
-from util import flatatt
+from datetime import timedelta
+from durationfield.utils.timestring import from_timedelta
 from urlparse import urljoin
  
 #-            output.append(u'<li><label%s>%s %s</label></li>' % (label_for, rendered_cb, option_label))
