@@ -13,7 +13,14 @@ setup(
     packages = packages,
     maintainer = 'John Paulett',
     maintainer_email = 'john@paulett.org',
-    description = durationfield.__doc__,
-    keywords = 'django',
+    description = 'Temporary reusable app for adding a DurationField to Django',
+    long_description = durationfield.__doc__,
+    keywords = ['django', 'duration field', 'interval field'],
     url = 'http://github.com/johnpaulett/django-durationfield/',
+    classifiers = [
+        'Intended Audience :: Developers',
+        'Programming Language :: Python',
+        'Environment :: Web Environment',
+        'Framework :: Django',
+        ],
 )

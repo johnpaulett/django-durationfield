@@ -21,4 +21,4 @@ The code in this app is currently based on the 2010-01-25 patch by Adys,
 Usage:
 TODO
 """
-__version__ = '0.1'
+__version__ = '0.1.1'
