@@ -4,6 +4,9 @@ from durationfield.forms.fields import DurationField as FDurationField
 from django.db.models.fields import Field
 
 class DurationField(Field):
+
+    description = "A duration of time"
+
     def __init__(self, *args, **kwargs):
         super(DurationField, self).__init__(*args, **kwargs)
         self.max_digits, self.decimal_places = 20, 6
