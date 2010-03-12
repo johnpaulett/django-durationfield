@@ -13,7 +13,16 @@ into the Django trunk.
  
 I thank the authors of the original DurationField patches, Marty Alchin, Adys,
 and Yuri Baburov.
- 
+
 The code in this app is currently based on the 2010-01-25 patch by Adys,
 `DurationField.patch <http://code.djangoproject.com/attachment/ticket/2443/durationfield.patch>`_
  
+Usage::
+
+    from durationfield.db.models.fields.duration import DurationField
+
+    class Time(models.Model):
+        ...
+        duration = models.DurationField()
+        ...
+
