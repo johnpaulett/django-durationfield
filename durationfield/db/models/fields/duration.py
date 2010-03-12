@@ -14,6 +14,9 @@ class DurationField(Field):
     def get_internal_type(self):
         return "BigIntegerField"
 
+    def db_type(self, connection):
+        return "bigint"
+
     def get_db_prep_save(self, value):
         if value is None:
             return None # db NULL
