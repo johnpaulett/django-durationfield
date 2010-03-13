@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 from datetime import timedelta
 from durationfield.forms.fields import DurationField as FDurationField
-from django.db.models.fields import Field
+from django.db.models.fields import DecimalField
 
-class DurationField(Field):
+class DurationField(DecimalField):
 
     description = "A duration of time"
 
