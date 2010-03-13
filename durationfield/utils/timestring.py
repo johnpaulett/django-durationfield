@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 Utility functions to convert back and forth between a timestring and timedelta.
-  1y 7m 6w 3d 18h 30min 23s 10ms 150mis
+  1y 7m 6w 3d 18h 30min 23s 10ms 150us
     => 1 year 7 months 6 weeks 3 days 18 hours 30 minutes 23 seconds 1 milliseconds 150 microseconds
     => datetime.timedelta(624, 6155, 805126)
 """
