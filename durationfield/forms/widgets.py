@@ -4,12 +4,7 @@ from django.forms.widgets import TextInput
 from django.utils.translation import ugettext
 from django.utils.encoding import StrAndUnicode, force_unicode
 from django.utils.safestring import mark_safe
-from django.utils import datetime_safe
-try:
-    from django.utils import formats
-except ImportError:
-    # For Django 1.1 compatibility
-    from durationfield.utils import compat as formats
+from django.utils import datetime_safe, formats
 from datetime import timedelta
 from durationfield.utils.timestring import from_timedelta
 from urlparse import urljoin
