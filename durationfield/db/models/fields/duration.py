@@ -12,7 +12,7 @@ class DurationField(DecimalField):
         self.max_digits, self.decimal_places = 20, 6
 
     def get_internal_type(self):
-        return "BigIntegerField"
+        return "IntegerField"
 
     def db_type(self, connection):
         return "bigint"
