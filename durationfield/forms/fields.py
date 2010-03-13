@@ -1,4 +1,5 @@
 from django.forms.fields import Field
+from django.core.exceptions import ValidationError
 from durationfield.utils.timestring import to_timedelta
 from django.utils.translation import ugettext_lazy as _
 from widgets import DurationInput
