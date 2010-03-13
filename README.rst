@@ -1,5 +1,8 @@
+DurationField
+=============
+
 Temporary reusable application for a DurationField in Django.
- 
+
 The django-durationfield package is a temporary solution for `#2443 <http://code.djangoproject.com/ticket/2443>`_,
 "Add IntervalField to database models." Since the existing patch was not
 committed before the 1.2 feature deadline, this package attempts to make the
@@ -17,9 +20,11 @@ and Yuri Baburov.
 The code in this app is currently based on the 2010-01-25 patch by Adys,
 `DurationField.patch <http://code.djangoproject.com/attachment/ticket/2443/durationfield.patch>`_
 
+Django 1.1.X
+------------
 
 Althought written to support Django 1.2, experimental Django 1.1 support has 
-been added. 
+been added. Please check out the django-1.1.X branch for that.
 
 This is beta software, please test thouroughly before putting into production
 and report back any issues.
