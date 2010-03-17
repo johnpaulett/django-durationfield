@@ -14,7 +14,9 @@ class DurationField(DecimalField):
     def get_internal_type(self):
         return "IntegerField"
 
-    def db_type(self, connection):
+    def db_type(self):
+        # Django 1.1.X does not support multiple db's and therefore does not 
+        # call db_type passing in the connection string.
         return "bigint"
 
     def get_db_prep_save(self, value):
