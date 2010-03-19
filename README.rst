@@ -44,7 +44,7 @@ In models.py::
 
     class Time(models.Model):
         ...
-        duration = models.DurationField()
+        duration = DurationField()
         ...
 
 
