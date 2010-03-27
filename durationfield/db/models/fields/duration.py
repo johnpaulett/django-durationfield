@@ -6,7 +6,7 @@ from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.utils.encoding import smart_str, smart_unicode
 
-from durationfield.utils.timestring import to_timedelta
+from durationfield.utils.timestring import to_timedelta, from_timedelta
 from durationfield.forms.fields import DurationField as FDurationField
 
 class DurationField(Field):
