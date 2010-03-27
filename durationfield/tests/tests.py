@@ -8,8 +8,8 @@ class DurationFieldTests(TestCase):
 
     def setUp(self):
         self.test_data = (
-            [u"8h", 28800000000L],
-            [u"6w 3d 18h 30min 23s 10ms 150us", 3954623010150L],
+            [u"8h", timedelta(microseconds=28800000000L)],
+            [u"6w 3d 18h 30min 23s 10ms 150us", timedelta(microseconds=3954623010150L)],
         )
         
         self.month_year_test_data = (
@@ -54,6 +54,50 @@ class DurationFieldTests(TestCase):
         model_test = TestNullableModel.objects.get(id__exact=model_test.id)
         self.assertEquals(None, model_test.duration_field)
         model_test.delete()
+
+    def testApplicationType(self):
+        """
+        Timedeltas should be returned to the applciation
+        """
+        model_test = TestModel()
+        td = timedelta(microseconds=1234567890)
+        model_test.duration_field = td
+        model_test.save()
+        model_test = TestModel.objects.get(id__exact=model_test.id)
+        self.assertEquals(td, model_test.duration_field)
+        model_test.delete()
+        
+        # Test with strings
+        model_test = TestModel()
+        td = "8d"
+        model_test.duration_field = td
+        model_test.save()
+        model_test = TestModel.objects.get(id__exact=model_test.id)
+        self.assertEquals(timedelta(days=8), model_test.duration_field)
+        model_test.delete()
+        
+        # Test with long
+        model_test = TestModel()
+        td = 28800000000L
+        model_test.duration_field = td
+        model_test.save()
+        model_test = TestModel.objects.get(id__exact=model_test.id)
+        self.assertEquals(timedelta(microseconds=td), model_test.duration_field)
+        model_test.delete()
+    
+    def testForm(self):
+        model_test = TestModel()
+        model_test.duration_field = timestring.to_timedelta("3d 8h 56s")
+        model_test.save()
+        model_test = TestModel.objects.get(id__exact=1)
+        
+        #form = DurationField()
+        #self.assertContains("input", str)
+
+
+
+
+
 
 
 

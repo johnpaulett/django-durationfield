@@ -23,6 +23,9 @@ values_in_microseconds = SortedDict((
 ))
 
 def to_timedelta(value):
+    """
+    returns a timedelta parsed from value
+    """
     chunks = []
     for b in value.lower().split():
         for index, char in enumerate(b):

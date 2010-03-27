@@ -20,12 +20,16 @@ from urlparse import urljoin
 
 class DurationInput(TextInput):
     def render(self, name, value, attrs=None):
-        if value is None: value = ''
+        if value is None: value = u''
         final_attrs = self.build_attrs(attrs, type=self.input_type, name=name)
-        if value != '':
+        if value != u'':
             # Only add the 'value' attribute if a value is non-empty.
+            if isinstance(value, timedelta):
+                value = from_timedelta(value)
+            
             if isinstance(value, int) or isinstance(value, long): # Database backends serving different types
                 value = from_timedelta(timedelta(microseconds=value))
+            
             final_attrs['value'] = force_unicode(formats.localize_input(value))
         return mark_safe(u'<input%s />' % flatatt(final_attrs))
  

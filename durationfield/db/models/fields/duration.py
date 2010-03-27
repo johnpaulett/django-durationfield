@@ -1,33 +1,92 @@
 # -*- coding: utf-8 -*-
 from datetime import timedelta
+from django.core import exceptions
+from django.db.models.fields import Field
+from django.db import models
+from django.utils.translation import ugettext_lazy as _
+from django.utils.encoding import smart_str, smart_unicode
+
+from durationfield.utils.timestring import to_timedelta
 from durationfield.forms.fields import DurationField as FDurationField
-from django.db.models.fields import DecimalField
 
-class DurationField(DecimalField):
+class DurationField(Field):
+    """
+    A duration field is used
+    """
+    description = _("A duration of time")
 
-    description = "A duration of time"
+    default_error_messages = {
+        'invalid': _("This value must be in \"w d h min s ms us\" format."),
+        'unknown_type': _("The value's type could not be converted"),
+    }
+
+    __metaclass__ = models.SubfieldBase
 
     def __init__(self, *args, **kwargs):
         super(DurationField, self).__init__(*args, **kwargs)
-        self.max_digits, self.decimal_places = 20, 6
+        #self.max_digits, self.decimal_places = 20, 6
 
     def get_internal_type(self):
-        return "IntegerField"
+        return "DurationField"
 
     def db_type(self):
-        # Django 1.1.X does not support multiple db's and therefore does not 
-        # call db_type passing in the connection string.
+        """
+        Returns the database column data type for this field, for the provided connection.
+        Django 1.1.X does not support multiple db's and therefore does not pass in the db
+        connection string. Called by Django only when the framework constructs the table
+        """
         return "bigint"
 
-    def get_db_prep_save(self, value):
+    def get_db_prep_value(self, value):
+        """
+        Returns field's value prepared for interacting with the database backend. In our case this is
+        an integer representing the number of microseconds elapsed.
+        """
         if value is None:
             return None # db NULL
         if isinstance(value, int) or isinstance(value, long):
             value = timedelta(microseconds=value)
         return value.days * 24 * 3600 * 1000000 + value.seconds * 1000000 + value.microseconds
+    
+    def get_db_prep_save(self, value):
+        return self.get_db_prep_value(value)
+        
+    def value_to_string(self, obj):
+        value = self._get_val_from_obj(obj)
+        return smart_unicode(from_timedelta(value))
 
     def to_python(self, value):
-        return value
+        """
+        Converts the input value into the timedelta Python data type, raising
+        django.core.exceptions.ValidationError if the data can't be converted.
+        Returns the converted value as a timedelta.
+        """
 
-    def formfield(self, form_class=FDurationField, **kwargs):
-        return super(DurationField, self).formfield(form_class, **kwargs)
+        # Note that value may be coming from the database column or a serializer so we should
+        # handle a timedelta, string or an integer
+        if value is None:
+            return value
+
+        if isinstance(value, timedelta):
+            return value
+ 
+        if isinstance(value, int) or isinstance(value, long):
+            return timedelta(microseconds=value)
+
+        # Try to parse the value
+        str = smart_str(value)
+        if isinstance(str, basestring):
+            try:
+                return to_timedelta(value)
+            except ValueError:
+                raise exceptions.ValidationError(self.default_error_messages['invalid'])
+
+        raise exceptions.ValidationError(self.default_error_messages['unknown_type'])
+
+    def formfield(self, **kwargs):
+        defaults = {'form_class': FDurationField}
+        defaults.update(kwargs)
+        return super(DurationField, self).formfield(**defaults)
+
+
+
