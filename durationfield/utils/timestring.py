@@ -42,6 +42,10 @@ def to_timedelta(value):
     return timedelta(microseconds=microseconds)
 
 def from_timedelta(value):
+    """
+    Converts a timedelta into a string representation of the timedelta. Negative timedeltas will be reported
+    as positive. For example, a timedelta of "-1 day, 00:00:00" will be formatted as "1d"
+    """
     if not value:
         return u'0s'
 
@@ -49,6 +53,7 @@ def from_timedelta(value):
         raise ValueError('to_timestring argument must be a datetime.timedelta instance')
 
     chunks = []
+    value = abs(value)
     microseconds = value.days * 24 * 3600 * 1000000 + value.seconds * 1000000 + value.microseconds
     for k in values_in_microseconds:
         if microseconds >= values_in_microseconds[k]:
