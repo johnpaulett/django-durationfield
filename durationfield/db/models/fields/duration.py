@@ -6,8 +6,13 @@ from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.utils.encoding import smart_str, smart_unicode
 
-from durationfield.utils.timestring import to_timedelta, from_timedelta
+from durationfield.utils.timestring import str_to_timedelta
 from durationfield.forms.fields import DurationField as FDurationField
+
+try:
+    from south.modelsinspector import add_introspection_rules
+except ImportError:
+    add_introspection_rules = None
 
 class DurationField(Field):
     """
@@ -46,14 +51,16 @@ class DurationField(Field):
             return None # db NULL
         if isinstance(value, int) or isinstance(value, long):
             value = timedelta(microseconds=value)
+        value = abs(value) # all durations are positive
+
         return value.days * 24 * 3600 * 1000000 + value.seconds * 1000000 + value.microseconds
-    
+
     def get_db_prep_save(self, value):
         return self.get_db_prep_value(value)
-        
+
     def value_to_string(self, obj):
         value = self._get_val_from_obj(obj)
-        return smart_unicode(from_timedelta(value))
+        return smart_unicode(value)
 
     def to_python(self, value):
         """
@@ -69,15 +76,15 @@ class DurationField(Field):
 
         if isinstance(value, timedelta):
             return value
- 
+
         if isinstance(value, int) or isinstance(value, long):
             return timedelta(microseconds=value)
 
         # Try to parse the value
-        str = smart_str(value)
-        if isinstance(str, basestring):
+        str_val = smart_str(value)
+        if isinstance(str_val, basestring):
             try:
-                return to_timedelta(value)
+                return str_to_timedelta(str_val)
             except ValueError:
                 raise exceptions.ValidationError(self.default_error_messages['invalid'])
 
@@ -89,4 +96,14 @@ class DurationField(Field):
         return super(DurationField, self).formfield(**defaults)
 
 
+if add_introspection_rules:
+    # Rules for South field introspection
+    duration_rules = [
+        (
+            (DurationField,),
+            [],
+            {}
+            )
+    ]
+    add_introspection_rules(duration_rules, ["^durationfield\.db\.models\.fields"])
 

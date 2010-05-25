@@ -1,98 +1,129 @@
 from django.test import TestCase
 from django.core import serializers
-from durationfield.tests.models import TestModel, TestNullableModel
+from durationfield.tests.models import (
+    TestModel,
+    TestNullableModel,
+    TestDefaultModel,
+    DEFAULT_DURATION
+)
 from durationfield.utils import timestring
 from datetime import timedelta
-    
+
 class DurationFieldTests(TestCase):
 
     def setUp(self):
-        self.test_data = (
-            [u"8h", timedelta(microseconds=28800000000L)],
-            [u"6w 3d 18h 30min 23s 10ms 150us", timedelta(microseconds=3954623010150L)],
-        )
-        
-        self.month_year_test_data = (
-            u"1y 7m 6w 3d 18h 30min 23s 10ms 150us",
-        )
-        
+        self.test_tds = [
+            timedelta(hours=1), # No days, no micro, single-digit hour
+            timedelta(hours=10), # double-digit hour
+            timedelta(hours=10, minutes=35, seconds=1),
+            timedelta(days=1), # Day, no micro
+            timedelta(days=1, microseconds=1), # Day, with micro
+            timedelta(days=10), # Days, no micro
+            timedelta(days=10, microseconds=1), # Days, with micro
+        ]
+
         return super(DurationFieldTests, self).setUp()
-    
-    def testTimedeltaRoundtrip(self):
-        for value in self.test_data:
-            time = timestring.to_timedelta(value[0])
-            new_value = timestring.from_timedelta(time)
-            self.assertEquals(value[0], new_value)
-            
-    def testUnitNormalization(self):
-        self.assertEquals(timestring.from_timedelta(timestring.to_timedelta("1000us")), "1ms")
-        self.assertEquals(timestring.from_timedelta(timestring.to_timedelta("1000ms")), "1s")
-        self.assertEquals(timestring.from_timedelta(timestring.to_timedelta("60s")), "1min")
-        self.assertEquals(timestring.from_timedelta(timestring.to_timedelta("60min")), "1h")
-        self.assertEquals(timestring.from_timedelta(timestring.to_timedelta("24h")), "1d")
-        self.assertEquals(timestring.from_timedelta(timestring.to_timedelta("7d")), "1w")
-        
-    
-    def testDataStability(self):
+
+    def _delta_to_microseconds(self, td):
+        """
+        Get the tota number of microseconds in a timedelta, normalizing days and
+        seconds to microseconds.
+        """
+        SECONDS_TO_US = 1000 * 1000
+        MINUTES_TO_US = SECONDS_TO_US * 60
+        HOURS_TO_US = MINUTES_TO_US * 60
+        DAYS_TO_US = HOURS_TO_US * 24
+
+        td_in_ms = td.days * DAYS_TO_US + td.seconds * SECONDS_TO_US + td.microseconds
+        self.assertEqual(timedelta(microseconds=td_in_ms), td)
+
+        return td_in_ms
+
+    def testTimedeltaStrRoundtrip(self):
+        for td in self.test_tds:
+            td_str = str(td)
+            td_from_str = timestring.str_to_timedelta(td_str)
+            self.assertEquals(td_from_str, td)
+
+    def testDbRoundTrip(self):
         """
         Data should remain the same when taking a round trip to and from the db
         """
-        for value in self.test_data:
-            model_test = TestModel()
-            model_test.duration_field = timestring.to_timedelta(value[0])
-            model_test.save()
-            model_test = TestModel.objects.get(id__exact=model_test.id)
-            self.assertEquals(value[1], model_test.duration_field)
-            model_test.delete()
-   
+        models = [TestModel, TestNullableModel, TestDefaultModel]
+
+        for td in self.test_tds:
+            for ModelClass in models:
+                tm = ModelClass()
+                tm.duration_field = td
+                tm.save()
+
+                tm_saved = ModelClass.objects.get(pk=tm.pk)
+                self.assertEqual(tm_saved.duration_field, tm.duration_field)
+
     def testDefaultValue(self):
         """
         Default value should be empty and fetchable
         """
         model_test = TestNullableModel()
         model_test.save()
-        model_test = TestNullableModel.objects.get(id__exact=model_test.id)
-        self.assertEquals(None, model_test.duration_field)
-        model_test.delete()
+        model_test_saved = TestNullableModel.objects.get(pk=model_test.pk)
+
+        self.assertEquals(model_test.duration_field, None)
+        self.assertEquals(model_test_saved.duration_field, None)
+
+    def testDefaultGiven(self):
+        """
+        Default value should use the default argument
+        """
+        model_test = TestDefaultModel()
+        model_test.save()
+
+        model_test_saved = TestDefaultModel.objects.get(pk=model_test.pk)
+        self.assertEquals(model_test.duration_field, DEFAULT_DURATION)
+        self.assertEquals(model_test_saved.duration_field, DEFAULT_DURATION)
 
     def testApplicationType(self):
         """
         Timedeltas should be returned to the applciation
         """
-        model_test = TestModel()
-        td = timedelta(microseconds=1234567890)
-        model_test.duration_field = td
-        model_test.save()
-        model_test = TestModel.objects.get(id__exact=model_test.id)
-        self.assertEquals(td, model_test.duration_field)
-        model_test.delete()
-        
-        # Test with strings
-        model_test = TestModel()
-        td = "8d"
-        model_test.duration_field = td
-        model_test.save()
-        model_test = TestModel.objects.get(id__exact=model_test.id)
-        self.assertEquals(timedelta(days=8), model_test.duration_field)
-        model_test.delete()
-        
-        # Test with long
-        model_test = TestModel()
-        td = 28800000000L
-        model_test.duration_field = td
-        model_test.save()
-        model_test = TestModel.objects.get(id__exact=model_test.id)
-        self.assertEquals(timedelta(microseconds=td), model_test.duration_field)
-        model_test.delete()
-    
-    def testForm(self):
-        model_test = TestModel()
-        model_test.duration_field = timestring.to_timedelta("3d 8h 56s")
-        model_test.save()
-        model_test = TestModel.objects.get(id__exact=1)
-        
-        #form = DurationField()
-        #self.assertContains("input", str)
+        for td in self.test_tds:
+            model_test = TestModel()
+            model_test.duration_field = td
+            model_test.save()
+            model_test = TestModel.objects.get(pk=model_test.pk)
+            self.assertEquals(td, model_test.duration_field)
+
+            # Test with strings
+            model_test = TestModel()
+            model_test.duration_field = str(td)
+            model_test.save()
+            model_test = TestModel.objects.get(pk=model_test.pk)
+            self.assertEquals(td, model_test.duration_field)
+
+            td_in_ms = self._delta_to_microseconds(td)
+
+            # Test with int
+            model_test = TestModel()
+            model_test.duration_field = td_in_ms
+            model_test.save()
+            model_test = TestModel.objects.get(pk=model_test.pk)
+            self.assertEquals(td, model_test.duration_field)
+
+            # Test with long
+            model_test = TestModel()
+            model_test.duration_field = long(td_in_ms)
+            model_test.save()
+            model_test = TestModel.objects.get(pk=model_test.pk)
+            self.assertEquals(td, model_test.duration_field)
+
+    #def testForm(self):
+        #model_test = TestModel()
+        #model_test.duration_field = timestring.to_timedelta("3d 8h 56s")
+        #model_test.save()
+        #model_test = TestModel.objects.get(id__exact=1)
+
+        ##form = DurationField()
+        ##self.assertContains("input", str)
 
 
 
