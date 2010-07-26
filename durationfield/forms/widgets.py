@@ -2,6 +2,7 @@
 from django.forms.util import flatatt
 from django.forms.widgets import TextInput
 from django.utils.safestring import mark_safe
+from django.utils.encoding import force_unicode
 try:
     from django.utils import formats
 except ImportError:
