@@ -32,8 +32,8 @@ and report back any issues.
 Years and Months
 ----------------
 
-You will need to uncomment two lines in timestring.py to support years and months.
-
+You will need to uncomment two lines in timestring.py to support years and months. This causes a 
+loss of precision because the number of days in a month is not exact. This has not been extensively tested.
 
 Usage
 -----
@@ -44,8 +44,48 @@ In models.py::
 
     class Time(models.Model):
         ...
-        duration = models.DurationField()
+        duration = DurationField()
         ...
+
+In your forms::
+
+    from durationfield.forms import DurationField as FDurationField
+    
+    class MyForm(forms.ModelForm):
+        duration = FDurationField()
+
+Note that database queries still need to treat the values as integers. If you are using things like 
+aggregates, you will need to explicitly convert them to timedeltas yourself:
+
+    timedelta(microseconds=list.aggregate(sum=Sum('duration'))['sum'])
+
+You can also make a template filter to render out duration values. Create a file called duration.py::
+
+    myapp/templatetags/__init__.py
+    myapp/templatetags/duration.py
+
+And put this code in it::
+
+    from django import template
+    from durationfield.utils.timestring import from_timedelta
+    
+    register = template.Library()
+    
+    def duration(value, arg=None):
+        if not value:
+            return u""
+        return u"%s" % from_timedelta(value)
+    
+    register.filter('duration', duration)
+    
+Then in your HTML template::
+
+
+    {% load duration %}    
+
+    ....
+    
+    <span>{{object.duration|duration}}</span>
 
 
 Example
@@ -53,18 +93,18 @@ Example
 
 Enter the time into the textbox in the following format::
     
-    1y 7m 6w 3d 18h 30min 23s 10ms 150us
+    6w 3d 18h 30min 23s 10ms 150us
 
 This is interpreted as::
     
-    1 year 7 months 6 weeks 3 days 18 hours 30 minutes 23 seconds 1 milliseconds 150 microseconds
+    6 weeks 3 days 18 hours 30 minutes 23 seconds 1 milliseconds 150 microseconds
 
 In your application it will be represented as a python datetime::
     
-    datetime.timedelta(624, 6155, 805126)
+    45 days, 18:30:23.010150
 
 This will be stored into the database as a 'bigint' with the value of::
     
-    53919755833350
+    3954623010150
 
 
