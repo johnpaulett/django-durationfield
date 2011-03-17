@@ -34,7 +34,7 @@ class DurationField(Field):
     def get_internal_type(self):
         return "DurationField"
 
-    def db_type(self):
+    def db_type(self, connection=None):
         """
         Returns the database column data type for this field, for the provided connection.
         Django 1.1.X does not support multiple db's and therefore does not pass in the db
@@ -42,7 +42,7 @@ class DurationField(Field):
         """
         return "bigint"
 
-    def get_db_prep_value(self, value):
+    def get_db_prep_value(self, value, connection=None, prepared=False):
         """
         Returns field's value prepared for interacting with the database backend. In our case this is
         an integer representing the number of microseconds elapsed.
@@ -55,8 +55,8 @@ class DurationField(Field):
 
         return value.days * 24 * 3600 * 1000000 + value.seconds * 1000000 + value.microseconds
 
-    def get_db_prep_save(self, value):
-        return self.get_db_prep_value(value)
+    def get_db_prep_save(self, value, connection=None):
+        return self.get_db_prep_value(value, connection=connection)
 
     def value_to_string(self, obj):
         value = self._get_val_from_obj(obj)
