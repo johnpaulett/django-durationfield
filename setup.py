@@ -17,7 +17,7 @@ setup(
     long_description = durationfield.__doc__,
     keywords = ['django', 'duration field', 'interval field'],
     url = 'http://django-durationfield.readthedocs.org',
-    license = 'BSD'
+    license = 'BSD',
     classifiers = [
         'Intended Audience :: Developers',
         'Programming Language :: Python',

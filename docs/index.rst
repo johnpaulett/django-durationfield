@@ -50,7 +50,7 @@ In your forms::
         duration = FDurationField()
 
 Note that database queries still need to treat the values as integers. If you are using things like 
-aggregates, you will need to explicitly convert them to timedeltas yourself:
+aggregates, you will need to explicitly convert them to timedeltas yourself::
 
     timedelta(microseconds=list.aggregate(sum=Sum('duration'))['sum'])
 
