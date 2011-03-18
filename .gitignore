@@ -5,6 +5,8 @@ tags
 /build
 /dist
 /env*
+/MANIFEST
 *#*
 *~
+*.db
 

@@ -54,35 +54,6 @@ aggregates, you will need to explicitly convert them to timedeltas yourself:
 
     timedelta(microseconds=list.aggregate(sum=Sum('duration'))['sum'])
 
-You can also make a template filter to render out duration values. Create a file called duration.py::
-
-    myapp/templatetags/__init__.py
-    myapp/templatetags/duration.py
-
-And put this code in it::
-
-    from django import template
-    from durationfield.utils.timestring import from_timedelta
-    
-    register = template.Library()
-    
-    def duration(value, arg=None):
-        if not value:
-            return u""
-        return u"%s" % from_timedelta(value)
-    
-    register.filter('duration', duration)
-    
-Then in your HTML template::
-
-
-    {% load duration %}    
-
-    ....
-    
-    <span>{{object.duration|duration}}</span>
-
-
 Example
 -------
 
