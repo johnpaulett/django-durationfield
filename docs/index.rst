@@ -109,8 +109,14 @@ Years and Months
 You will need to uncomment two lines in timestring.py to support years and months. This causes a 
 loss of precision because the number of days in a month is not exact. This has not been extensively tested.
 
+
+Development
+-----------
+
+Please fork and submit issues at https://github.com/johnpaulett/django-durationfield
+
 Testing
--------
+~~~~~~~
 
 If you are interested in developing django-duration field, the following commands
 can help you test django-durationfield across all current versions of Django.
