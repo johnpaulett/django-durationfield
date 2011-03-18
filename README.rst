@@ -3,4 +3,4 @@ DurationField
 
 Reusable application for a DurationField in Django.
 
-See http://readthedocs.org/docs/django-durationfield
+See http://django-durationfield.readthedocs.org

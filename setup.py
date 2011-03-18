@@ -16,7 +16,7 @@ setup(
     description = 'Reusable app for adding a DurationField to Django',
     long_description = durationfield.__doc__,
     keywords = ['django', 'duration field', 'interval field'],
-    url = 'http://readthedocs.org/docs/django-durationfield/',
+    url = 'http://django-durationfield.readthedocs.org',
     license = 'BSD'
     classifiers = [
         'Intended Audience :: Developers',
