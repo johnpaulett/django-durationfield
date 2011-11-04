@@ -24,6 +24,9 @@ def str_to_timedelta(td_str):
     Additionally will handle user input in months and years, translating those
     bits into a count of days which is 'close enough'.
     """
+    if not td_str:
+        return None
+
     time_format = r"(?:(?P<days>\d+)\W*(?:days?|d),?)?\W*(?:(?P<hours>\d+):(?P<minutes>\d+)(?::(?P<seconds>\d+)(?:\.(?P<microseconds>\d+))?)?)?"
     if ALLOW_MONTHS:
         time_format = r"(?:(?P<months>\d+)\W*(?:months?|m),?)?\W*" + time_format
