@@ -17,3 +17,6 @@ else:
 INSTALLED_APPS = (
     'durationfield.tests',
 )
+
+DURATIONFIELD_ALLOW_YEARS = True
+DURATIONFIELD_ALLOW_MONTHS = True

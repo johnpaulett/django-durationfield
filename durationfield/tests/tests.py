@@ -26,7 +26,7 @@ class DurationFieldTests(TestCase):
 
     def _delta_to_microseconds(self, td):
         """
-        Get the tota number of microseconds in a timedelta, normalizing days and
+        Get the total number of microseconds in a timedelta, normalizing days and
         seconds to microseconds.
         """
         SECONDS_TO_US = 1000 * 1000
@@ -116,16 +116,64 @@ class DurationFieldTests(TestCase):
             model_test = TestModel.objects.get(pk=model_test.pk)
             self.assertEquals(td, model_test.duration_field)
 
-    #def testForm(self):
-        #model_test = TestModel()
-        #model_test.duration_field = timestring.to_timedelta("3d 8h 56s")
-        #model_test.save()
-        #model_test = TestModel.objects.get(id__exact=1)
+    def testInputTime(self):
+        delta = timestring.str_to_timedelta("10:23")
+        seconds = (10 * 60 * 60) + (23 * 60)
+        self.assertEquals(seconds, delta.seconds)
 
-        ##form = DurationField()
-        ##self.assertContains("input", str)
+    def testInputTimeSeonds(self):
+        delta = timestring.str_to_timedelta("12:21:24")
+        seconds = (12 * 60 * 60) + (21 * 60) + 24
+        self.assertEquals(seconds, delta.seconds)
 
+    def testInputTimeSecondsMicroseconds(self):
+        delta = timestring.str_to_timedelta("11:20:22.000098")
+        seconds = (11 * 60 * 60) + (20 * 60) + 22
+        self.assertEquals(seconds, delta.seconds)
+        self.assertEquals(98, delta.microseconds)
 
+    def testInputAll(self):
+        delta = timestring.str_to_timedelta("1 year, 10 months, 3 weeks, 2 days, 3:40:50")
+        days = (
+                    (1 * 365) +
+                    (10 * 30) +
+                    (3 * 7) +
+                    2
+                )
+        seconds = (
+                    (3 * 60 * 60) +
+                    (40 * 60) + 
+                    50
+                )
+        self.assertEquals(
+                    days, delta.days
+                )
+        self.assertEquals(
+                    seconds, delta.seconds
+                )
 
+    def testInputAllAbbreviated(self):
+        delta = timestring.str_to_timedelta("2y 9m 1w 20d 0:10:39")
+        days = (
+                    (2 * 365) +
+                    (9 * 30) +
+                    (1 * 7) +
+                    20
+                )
+        seconds = (
+                    (0 * 60 * 60) +
+                    (10 * 60) + 
+                    39
+                )
+        self.assertEquals(
+                    days, delta.days
+                )
+        self.assertEquals(
+                    seconds, delta.seconds
+                )
 
-
+    def testInputDaysOnly(self):
+        delta = timestring.str_to_timedelta("24 days")
+        self.assertEquals(
+                    24, delta.days
+                )

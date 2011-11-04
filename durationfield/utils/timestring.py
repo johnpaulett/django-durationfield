@@ -27,7 +27,7 @@ def str_to_timedelta(td_str):
     if not td_str:
         return None
 
-    time_format = r"(?:(?P<days>\d+)\W*(?:days?|d),?)?\W*(?:(?P<hours>\d+):(?P<minutes>\d+)(?::(?P<seconds>\d+)(?:\.(?P<microseconds>\d+))?)?)?"
+    time_format = r"(?:(?P<weeks>\d+)\W*(?:weeks?|w),?)?\W*(?:(?P<days>\d+)\W*(?:days?|d),?)?\W*(?:(?P<hours>\d+):(?P<minutes>\d+)(?::(?P<seconds>\d+)(?:\.(?P<microseconds>\d+))?)?)?"
     if ALLOW_MONTHS:
         time_format = r"(?:(?P<months>\d+)\W*(?:months?|m),?)?\W*" + time_format
     if ALLOW_YEARS:
@@ -46,6 +46,7 @@ def str_to_timedelta(td_str):
         time_groups["days"] = time_groups["days"] + (time_groups["years"] * YEARS_TO_DAYS)
     if "months" in time_groups.keys():
         time_groups["days"] = time_groups["days"] + (time_groups["months"] * MONTHS_TO_DAYS)
+    time_groups["days"] = time_groups["days"] + (time_groups["weeks"] * 7)
 
     return timedelta(
         days=time_groups["days"],
