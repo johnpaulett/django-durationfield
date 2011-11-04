@@ -3,7 +3,15 @@
 Utility functions to convert back and forth between a timestring and timedelta.
 """
 
+from django.conf import settings
+
 from datetime import timedelta
+import re
+
+ALLOW_MONTHS = getattr(settings, "DURATIONFIELD_ALLOW_MONTHS", False)
+ALLOW_YEARS = getattr(settings, "DURATIONFIELD_ALLOW_YEARS", False)
+MONTHS_TO_DAYS = getattr(settings, "DURATIONFIELD_MONTHS_TO_DAYS", 30)
+YEARS_TO_DAYS = getattr(settings, "DURATIONFIELD_YEARS_TO_DAYS", 365)
 
 def str_to_timedelta(td_str):
     """
@@ -12,34 +20,32 @@ def str_to_timedelta(td_str):
     Timedelta displays in the format ``X day(s), H:MM:SS.ffffff``
     Both the days section and the microseconds section are optional and ``days``
     is singular in cases where there is only one day.
+
+    Additionally will handle user input in months and years, translating those
+    bits into a count of days which is 'close enough'.
     """
-    if td_str == '':
-        return None
+    time_format = r"(?:(?P<days>\d+)\w*(?:days?|d),?)?\w*(?P<hours>\d+):(?P<minutes>\d+):(?P<seconds>\d+)(?:\.(?P<microseconds>\d+))?"
+    if ALLOW_MONTHS:
+        time_format = r"(?:(?P<months>\d+)\w*(?:months?|m),?)?\w*" + time_format
+    if ALLOW_YEARS:
+        time_format = r"(?:(?P<years>\d+)\w*(?:years?|y),?)?\w*" + time_format
+    time_matcher = re.compile(time_format)
+    time_groups = time_matcher.groupdict()
 
-    days_str = '0 days'
-    if td_str.find('day') != -1:
-        # Has a days value
-        days_str, td_str = td_str.split(',')
+    for key in time_groups.keys():
+        if time_groups[key]:
+            time_groups[key] = int(time_groups[key])
+        else:
+            time_groups[key] = 0
 
-    day_num, _ = days_str.split()
-    days = int(day_num)
-
-    us_str = '0'
-    if td_str.find('.') != -1:
-        # Has microseconds
-        td_str, us_str = td_str.split('.')
-
-    microseconds = int(us_str)
-
-    hours_str, minutes_str, seconds_str = td_str.split(':')
-
-    hours = int(hours_str)
-    minutes = int(minutes_str)
-    seconds = int(seconds_str)
+    if "years" in time_groups.keys():
+        time_groups["days"] = time_groups["days"] + (time_groups["years"] * YEARS_TO_DAYS)
+    if "months" in time_groups.keys():
+        time_groups["days"] = time_groups["days"] + (time_groups["months"] * MONTHS_TO_DAYS)
 
     return timedelta(
-        days=days,
-        hours=hours,
-        minutes=minutes,
-        seconds=seconds,
-        microseconds=microseconds)
+        days=time_groups["days"],
+        hours=time_groups["hours"],
+        minutes=time_groups["minutes"],
+        seconds=time_groups["seconds"],
+        microseconds=time_groups["microseconds"])
