@@ -24,13 +24,14 @@ def str_to_timedelta(td_str):
     Additionally will handle user input in months and years, translating those
     bits into a count of days which is 'close enough'.
     """
-    time_format = r"(?:(?P<days>\d+)\w*(?:days?|d),?)?\w*(?P<hours>\d+):(?P<minutes>\d+):(?P<seconds>\d+)(?:\.(?P<microseconds>\d+))?"
+    time_format = r"(?:(?P<days>\d+)\W*(?:days?|d),?)?\W*(?:(?P<hours>\d+):(?P<minutes>\d+)(?::(?P<seconds>\d+)(?:\.(?P<microseconds>\d+))?)?)?"
     if ALLOW_MONTHS:
-        time_format = r"(?:(?P<months>\d+)\w*(?:months?|m),?)?\w*" + time_format
+        time_format = r"(?:(?P<months>\d+)\W*(?:months?|m),?)?\W*" + time_format
     if ALLOW_YEARS:
-        time_format = r"(?:(?P<years>\d+)\w*(?:years?|y),?)?\w*" + time_format
+        time_format = r"(?:(?P<years>\d+)\W*(?:years?|y),?)?\W*" + time_format
     time_matcher = re.compile(time_format)
-    time_groups = time_matcher.groupdict()
+    time_matches = time_matcher.match(td_str)
+    time_groups = time_matches.groupdict()
 
     for key in time_groups.keys():
         if time_groups[key]:
