@@ -7,7 +7,7 @@ This reusable app was conceived as a temporary solution for an old request to ad
 native support for an interval or duration field to Django core, 
 `#2443 <http://code.djangoproject.com/ticket/2443>`_,
 "Add IntervalField to database models." This app started from the 
-2010-01-25 patch by Adys,
+2010-01-25 patch by Adys (Jerome Leclanche),
 `DurationField.patch <http://code.djangoproject.com/attachment/ticket/2443/durationfield.patch>`_ and has evolved considerably as people have used it in their 
 own applications.
 
@@ -121,8 +121,8 @@ Django 1.1::
 Authors
 -------
 
-Thanks to the authors of the original DurationField patches, Marty Alchin, Adys,
-and Yuri Baburov.
+Thanks to the authors of the original DurationField patches, Marty Alchin,
+Jerome Leclanche, and Yuri Baburov.
 
 Thanks to the contributors to django-durationfield:
 
