@@ -58,28 +58,47 @@ Example
 -------
 
 Enter the time into the textbox in the following format::
+
+    3 days 2:20:10
+
+or::
     
-    6w 3d 18h 30min 23s 10ms 150us
+    3d 2:20:10
 
 This is interpreted as::
     
-    6 weeks 3 days 18 hours 30 minutes 23 seconds 1 milliseconds 150 microseconds
+    3 days 2 hours 20 minutes 10 seconds
 
 In your application it will be represented as a python ``datetime.timedelta``::
     
-    45 days, 18:30:23.010150
+    3 days, 2:20:10
 
-This will be stored into the database as a 'bigint' with the value of::
-    
-    3954623010150
+This will be stored into the database as a 'bigint'.
 
+You can be rather more elaborate by using microseconds and weeks (or even months, and years
+with a configuration setting)::
+
+    1 year, 2 months, 3 weeks, 4 days, 5:06:07.000008
  
 Years and Months
 ----------------
 
-You will need to uncomment two lines in timestring.py to support years and months. This causes a 
-loss of precision because the number of days in a month is not exact. This has not been extensively tested.
+You will need to set a setting in your ``settings.py`` to allow your users to enter
+values for years or months. This causes a loss of precision because the number 
+of days in a month is not exact. This has not been extensively tested.
 
+To allow users to enter ``X years`` or ``X months`` add::
+
+    ``DURATIONFIELD_ALLOW_YEARS = True``
+
+or::
+
+    ``DURATIONFIELD_ALLOW_MONTHS = True``
+
+Currently, those fields will be translated into days using either 365 or 30 respectively.
+
+To override this setting, add an entry into your settings named ``DURATIONFIELD_YEARS_TO_DAYS``
+or ``DURATIONFIELD_MONTHS_TO_DAYS`` setting a new translation value.
 
 Development
 -----------
@@ -132,3 +151,4 @@ Thanks to the contributors to django-durationfield:
  * Guillaume Libersat (https://github.com/glibersat)
  * Jason Mayfield (https://github.com/jwmayfield)
  * silent1mezzo (https://github.com/silent1mezzo)
+ * Adam Coddington (https://github.com/latestrevision)
