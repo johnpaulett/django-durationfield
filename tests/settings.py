@@ -15,8 +15,10 @@ else:
         }
   
 INSTALLED_APPS = (
-    'durationfield.tests',
+    'tests',
 )
 
 DURATIONFIELD_ALLOW_YEARS = True
 DURATIONFIELD_ALLOW_MONTHS = True
+
+SECRET_KEY = '_2roqfdp42u3qn23xc=z4**vueob2#!yloe=_+go&wxsi&glt1'

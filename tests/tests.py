@@ -1,6 +1,6 @@
 from django.test import TestCase
 from django.core import serializers
-from durationfield.tests.models import (
+from .models import (
     TestModel,
     TestNullableModel,
     TestDefaultModel,

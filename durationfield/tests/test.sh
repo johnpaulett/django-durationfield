@@ -1,1 +1,0 @@
-django-admin.py test --settings=durationfield.tests.settings --pythonpath=../..

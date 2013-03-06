@@ -27,7 +27,7 @@ and report back any issues.
 Django Versions
 ---------------
 
-django-duration field has been tested on Django 1.1.4 through Django 1.3.  Please
+django-duration field has been tested on Django 1.1.4 through Django 1.5.  Please
 report any bugs or patches in improve version support.
 
 Usage
@@ -108,33 +108,11 @@ Please fork and submit issues at https://github.com/johnpaulett/django-durationf
 Testing
 ~~~~~~~
 
-If you are interested in developing django-duration field, the following commands
-can help you test django-durationfield across all current versions of Django.
+If you are interested in developing django-duration field, you can use
+`tox <tox.readthedocs.org>`_ to test django-durationfield across all
+current versions of Django::
 
-Django 1.3::
-
-    virtualenv --no-site-packages env1.3
-    source env1.3/bin/activate
-    pip install http://www.djangoproject.com/download/1.3-rc-1/tarball/
-    cd durationfield/tests
-    ./test.sh
-
-
-Django 1.2::
-
-    virtualenv --no-site-packages env1.2
-    source env1.2/bin/activate
-    pip install Django==1.2.5
-    cd durationfield/tests
-    ./test.sh
-
-Django 1.1::
-
-    virtualenv --no-site-packages env1.1
-    source env1.1/bin/activate
-    pip install Django==1.1.4
-    cd durationfield/tests
-    ./test.sh
+    tox
 
 
 Authors
