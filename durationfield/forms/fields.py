@@ -5,6 +5,7 @@ from django.utils.translation import ugettext_lazy as _
 from durationfield.forms.widgets import DurationInput
 from durationfield.utils.timestring import str_to_timedelta
 
+
 class DurationField(Field):
     widget = DurationInput
 
@@ -22,12 +23,11 @@ class DurationField(Field):
         super(DurationField, self).clean(value)
         try:
             return str_to_timedelta(value)
-        except ValueError, e:
+        except ValueError:
             raise ValidationError(self.default_error_messages['invalid'])
 
     def to_python(self, value):
         try:
             return str_to_timedelta(value)
-        except ValueError, e:
+        except ValueError:
             raise ValidationError(self.default_error_messages['invalid'])
-

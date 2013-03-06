@@ -14,6 +14,7 @@ try:
 except ImportError:
     add_introspection_rules = None
 
+
 class DurationField(Field):
     """
     A duration field is used
@@ -44,16 +45,21 @@ class DurationField(Field):
 
     def get_db_prep_value(self, value, connection=None, prepared=False):
         """
-        Returns field's value prepared for interacting with the database backend. In our case this is
-        an integer representing the number of microseconds elapsed.
+        Returns field's value prepared for interacting with the database backend.
+        In our case this is an integer representing the number of microseconds
+        elapsed.
         """
         if value is None:
-            return None # db NULL
+            return None  # db NULL
         if isinstance(value, int) or isinstance(value, long):
             value = timedelta(microseconds=value)
-        value = abs(value) # all durations are positive
+        value = abs(value)  # all durations are positive
 
-        return value.days * 24 * 3600 * 1000000 + value.seconds * 1000000 + value.microseconds
+        return (
+            value.days * 24 * 3600 * 1000000
+            + value.seconds * 1000000
+            + value.microseconds
+        )
 
     def get_db_prep_save(self, value, connection=None):
         return self.get_db_prep_value(value, connection=connection)
@@ -103,7 +109,8 @@ if add_introspection_rules:
             (DurationField,),
             [],
             {}
-            )
+        )
     ]
-    add_introspection_rules(duration_rules, ["^durationfield\.db\.models\.fields"])
-
+    add_introspection_rules(
+        duration_rules, ["^durationfield\.db\.models\.fields"]
+    )

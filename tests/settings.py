@@ -11,9 +11,9 @@ else:
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
             'NAME': 'durationfieldtest.db',
-            }
         }
-  
+    }
+
 INSTALLED_APPS = (
     'tests',
 )

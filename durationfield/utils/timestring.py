@@ -13,6 +13,7 @@ ALLOW_YEARS = getattr(settings, "DURATIONFIELD_ALLOW_YEARS", False)
 MONTHS_TO_DAYS = getattr(settings, "DURATIONFIELD_MONTHS_TO_DAYS", 30)
 YEARS_TO_DAYS = getattr(settings, "DURATIONFIELD_YEARS_TO_DAYS", 365)
 
+
 def str_to_timedelta(td_str):
     """
     Returns a timedelta parsed from the native string output of a timedelta.
