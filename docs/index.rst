@@ -114,6 +114,13 @@ current versions of Django::
 
     tox
 
+Changelog
+---------
+
+0.4.0
+
+ * Python 3 support.  Drop support for Django < 1.4
+
 
 Authors
 -------
