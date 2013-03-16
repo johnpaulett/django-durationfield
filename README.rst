@@ -1,6 +1,8 @@
 DurationField
 =============
 
+.. image:: https://api.travis-ci.org/johnpaulett/django-durationfield.png
+
 Reusable application for a DurationField in Django.
 
-See http://django-durationfield.readthedocs.org
+See https://django-durationfield.readthedocs.org
