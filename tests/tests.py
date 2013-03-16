@@ -1,4 +1,5 @@
 from django.test import TestCase
+from django.utils import six, unittest
 from .models import (
     TestModel,
     TestNullableModel,
@@ -43,7 +44,7 @@ class DurationFieldTests(TestCase):
         for td in self.test_tds:
             td_str = str(td)
             td_from_str = timestring.str_to_timedelta(td_str)
-            self.assertEquals(td_from_str, td)
+            self.assertEqual(td_from_str, td)
 
     def testDbRoundTrip(self):
         """
@@ -68,8 +69,8 @@ class DurationFieldTests(TestCase):
         model_test.save()
         model_test_saved = TestNullableModel.objects.get(pk=model_test.pk)
 
-        self.assertEquals(model_test.duration_field, None)
-        self.assertEquals(model_test_saved.duration_field, None)
+        self.assertEqual(model_test.duration_field, None)
+        self.assertEqual(model_test_saved.duration_field, None)
 
     def testDefaultGiven(self):
         """
@@ -79,8 +80,8 @@ class DurationFieldTests(TestCase):
         model_test.save()
 
         model_test_saved = TestDefaultModel.objects.get(pk=model_test.pk)
-        self.assertEquals(model_test.duration_field, DEFAULT_DURATION)
-        self.assertEquals(model_test_saved.duration_field, DEFAULT_DURATION)
+        self.assertEqual(model_test.duration_field, DEFAULT_DURATION)
+        self.assertEqual(model_test_saved.duration_field, DEFAULT_DURATION)
 
     def testApplicationType(self):
         """
@@ -91,46 +92,47 @@ class DurationFieldTests(TestCase):
             model_test.duration_field = td
             model_test.save()
             model_test = TestModel.objects.get(pk=model_test.pk)
-            self.assertEquals(td, model_test.duration_field)
+            self.assertEqual(td, model_test.duration_field)
 
             # Test with strings
             model_test = TestModel()
             model_test.duration_field = str(td)
             model_test.save()
             model_test = TestModel.objects.get(pk=model_test.pk)
-            self.assertEquals(td, model_test.duration_field)
-
-            td_in_ms = self._delta_to_microseconds(td)
+            self.assertEqual(td, model_test.duration_field)
 
             # Test with int
             model_test = TestModel()
-            model_test.duration_field = td_in_ms
+            model_test.duration_field = self._delta_to_microseconds(td)
             model_test.save()
             model_test = TestModel.objects.get(pk=model_test.pk)
-            self.assertEquals(td, model_test.duration_field)
+            self.assertEqual(td, model_test.duration_field)
 
+    @unittest.skipIf(six.PY3, 'long not present in Python 3')
+    def testLongInPython2(self):
+        for td in self.test_tds:
             # Test with long
             model_test = TestModel()
-            model_test.duration_field = long(td_in_ms)
+            model_test.duration_field = long(self._delta_to_microseconds(td))
             model_test.save()
             model_test = TestModel.objects.get(pk=model_test.pk)
-            self.assertEquals(td, model_test.duration_field)
+            self.assertEqual(td, model_test.duration_field)
 
     def testInputTime(self):
         delta = timestring.str_to_timedelta("10:23")
         seconds = (10 * 60 * 60) + (23 * 60)
-        self.assertEquals(seconds, delta.seconds)
+        self.assertEqual(seconds, delta.seconds)
 
     def testInputTimeSeonds(self):
         delta = timestring.str_to_timedelta("12:21:24")
         seconds = (12 * 60 * 60) + (21 * 60) + 24
-        self.assertEquals(seconds, delta.seconds)
+        self.assertEqual(seconds, delta.seconds)
 
     def testInputTimeSecondsMicroseconds(self):
         delta = timestring.str_to_timedelta("11:20:22.000098")
         seconds = (11 * 60 * 60) + (20 * 60) + 22
-        self.assertEquals(seconds, delta.seconds)
-        self.assertEquals(98, delta.microseconds)
+        self.assertEqual(seconds, delta.seconds)
+        self.assertEqual(98, delta.microseconds)
 
     def testInputAll(self):
         delta = timestring.str_to_timedelta("1 year, 10 months, 3 weeks, 2 days, 3:40:50")
@@ -145,10 +147,10 @@ class DurationFieldTests(TestCase):
             (40 * 60) +
             50
         )
-        self.assertEquals(
+        self.assertEqual(
             days, delta.days
         )
-        self.assertEquals(
+        self.assertEqual(
             seconds, delta.seconds
         )
 
@@ -165,15 +167,15 @@ class DurationFieldTests(TestCase):
             (10 * 60) +
             39
         )
-        self.assertEquals(
+        self.assertEqual(
             days, delta.days
         )
-        self.assertEquals(
+        self.assertEqual(
             seconds, delta.seconds
         )
 
     def testInputDaysOnly(self):
         delta = timestring.str_to_timedelta("24 days")
-        self.assertEquals(
+        self.assertEqual(
             24, delta.days
         )
