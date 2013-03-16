@@ -1,0 +1,7 @@
+language: python
+python:
+  - "2.7"
+env:
+  - DJANGO_VERSION=1.5.0
+install: pip install --use-mirrors -q Django==$DJANGO_VERSION
+script: tests/test.sh
