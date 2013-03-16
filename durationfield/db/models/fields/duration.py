@@ -3,8 +3,9 @@ from datetime import timedelta
 from django.core import exceptions
 from django.db.models.fields import Field
 from django.db import models
+from django.utils import six
 from django.utils.translation import ugettext_lazy as _
-from django.utils.encoding import smart_str, smart_unicode
+from django.utils.encoding import smart_text
 
 from durationfield.utils.timestring import str_to_timedelta
 from durationfield.forms.fields import DurationField as FDurationField
@@ -15,7 +16,7 @@ except ImportError:
     add_introspection_rules = None
 
 
-class DurationField(Field):
+class DurationField(six.with_metaclass(models.SubfieldBase, Field)):
     """
     A duration field is used
     """
@@ -25,8 +26,6 @@ class DurationField(Field):
         'invalid': _("This value must be in \"w d h min s ms us\" format."),
         'unknown_type': _("The value's type could not be converted"),
     }
-
-    __metaclass__ = models.SubfieldBase
 
     def __init__(self, *args, **kwargs):
         super(DurationField, self).__init__(*args, **kwargs)
@@ -51,7 +50,7 @@ class DurationField(Field):
         """
         if value is None:
             return None  # db NULL
-        if isinstance(value, int) or isinstance(value, long):
+        if isinstance(value, six.integer_types):
             value = timedelta(microseconds=value)
         value = abs(value)  # all durations are positive
 
@@ -66,7 +65,7 @@ class DurationField(Field):
 
     def value_to_string(self, obj):
         value = self._get_val_from_obj(obj)
-        return smart_unicode(value)
+        return smart_text(value)
 
     def to_python(self, value):
         """
@@ -83,12 +82,12 @@ class DurationField(Field):
         if isinstance(value, timedelta):
             return value
 
-        if isinstance(value, int) or isinstance(value, long):
+        if isinstance(value, six.integer_types):
             return timedelta(microseconds=value)
 
         # Try to parse the value
-        str_val = smart_str(value)
-        if isinstance(str_val, basestring):
+        str_val = smart_text(value)
+        if isinstance(str_val, six.string_types):
             try:
                 return str_to_timedelta(str_val)
             except ValueError:
