@@ -3,11 +3,12 @@ python:
   - "2.7"
   - "3.3"
 env:
-  - DJANGO_VERSION=1.5.0
-  - DJANGO_VERSION=1.4.5
+  - DJANGO_VERSION=1.6.0
+  - DJANGO_VERSION=1.5.5
+  - DJANGO_VERSION=1.4.10
 install: pip install --use-mirrors -q Django==$DJANGO_VERSION
 script: tests/test.sh
 matrix:
   exclude:
     - python: "3.3"
-      env: DJANGO_VERSION=1.4.5
+      env: DJANGO_VERSION=1.4.10
