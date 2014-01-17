@@ -127,6 +127,11 @@ current versions of Django::
 Changelog
 ---------
 
+0.5.0
+
+ * Raise a ValidationError when given an invalid time string. Thanks to
+   `blueyed <https://github.com/blueyed>`_ for the bug report.
+
 0.4.0
 
  * Python 3 support.  Drop support for Django < 1.4

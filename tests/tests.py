@@ -1,3 +1,4 @@
+from django.core.exceptions import ValidationError
 from django.test import TestCase
 from django.utils import six, unittest
 from .models import (
@@ -46,6 +47,9 @@ class DurationFieldTests(TestCase):
             td_from_str = timestring.str_to_timedelta(td_str)
             self.assertEqual(td_from_str, td)
 
+    def testTimedeltaStrInvalid(self):
+        self.assertRaises(ValidationError, timestring.str_to_timedelta, 'fake')
+
     def testDbRoundTrip(self):
         """
         Data should remain the same when taking a round trip to and from the db
@@ -60,6 +64,12 @@ class DurationFieldTests(TestCase):
 
                 tm_saved = ModelClass.objects.get(pk=tm.pk)
                 self.assertEqual(tm_saved.duration_field, tm.duration_field)
+
+    def testInvalidSaveAttempt(self):
+        self.assertRaises(ValidationError, TestModel, duration_field='invalid')
+
+        # not saved in DB
+        self.assertEqual(TestModel.objects.count(), 0)
 
     def testDefaultValue(self):
         """

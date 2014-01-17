@@ -4,6 +4,7 @@ Utility functions to convert back and forth between a timestring and timedelta.
 """
 
 from django.conf import settings
+from django.core.exceptions import ValidationError
 
 from datetime import timedelta
 import re
@@ -37,11 +38,20 @@ def str_to_timedelta(td_str):
     time_matches = time_matcher.match(td_str)
     time_groups = time_matches.groupdict()
 
+    # If passed an invalid string, the regex will return all None's, so as
+    # soon as we get a non-None value, we are more confident the string
+    # is valid (possibly some invalid numeric formats this will not catch.
+    # Refs #11
+    is_valid = False
     for key in time_groups.keys():
-        if time_groups[key]:
+        if time_groups[key] is not None:
+            is_valid = True
             time_groups[key] = int(time_groups[key])
         else:
             time_groups[key] = 0
+
+    if not is_valid:
+        raise ValidationError("Invalid timedelta string, '{0}'".format(td_str))
 
     if "years" in time_groups.keys():
         time_groups["days"] = time_groups["days"] + (time_groups["years"] * YEARS_TO_DAYS)
@@ -54,4 +64,5 @@ def str_to_timedelta(td_str):
         hours=time_groups["hours"],
         minutes=time_groups["minutes"],
         seconds=time_groups["seconds"],
-        microseconds=time_groups["microseconds"])
+        microseconds=time_groups["microseconds"]
+    )
