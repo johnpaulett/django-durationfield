@@ -152,3 +152,4 @@ Thanks to the contributors to django-durationfield:
  * Jason Mayfield (https://github.com/jwmayfield)
  * silent1mezzo (https://github.com/silent1mezzo)
  * Adam Coddington (https://github.com/latestrevision)
+ * Daniel Hahler (https://github.com/blueyed)
