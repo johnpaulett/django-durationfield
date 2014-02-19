@@ -46,7 +46,15 @@ def str_to_timedelta(td_str):
     for key in time_groups.keys():
         if time_groups[key] is not None:
             is_valid = True
-            time_groups[key] = int(time_groups[key])
+
+            if key == 'microseconds':
+                val = time_groups[key]
+                leading_zeros = len(val) - len(val.lstrip('0'))
+                time_groups[key] = int(val.lstrip('0')
+                                          .ljust(6 - leading_zeros, '0'))
+            else:
+                time_groups[key] = int(time_groups[key])
+
         else:
             time_groups[key] = 0
 

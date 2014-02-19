@@ -144,6 +144,18 @@ class DurationFieldTests(TestCase):
         self.assertEqual(seconds, delta.seconds)
         self.assertEqual(98, delta.microseconds)
 
+    def testInputTimeMicrosecondsRightPadZeros(self):
+        delta = timestring.str_to_timedelta("11:20:22.160")
+        self.assertEqual(160000, delta.microseconds)
+
+    def testInputTimeMicrosecondsLeftPadZeros(self):
+        delta = timestring.str_to_timedelta("11:20:22.016")
+        self.assertEqual(16000, delta.microseconds)
+
+    def testInputTimeMicrosecondsBothPadZeros(self):
+        delta = timestring.str_to_timedelta("11:20:22.0160")
+        self.assertEqual(16000, delta.microseconds)
+
     def testInputAll(self):
         delta = timestring.str_to_timedelta("1 year, 10 months, 3 weeks, 2 days, 3:40:50")
         days = (
