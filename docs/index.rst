@@ -127,6 +127,13 @@ current versions of Django::
 Changelog
 ---------
 
+0.5.1
+
+ * Correctly parse microseconds. Previously, "0.01" would be incorrectly
+   interpreted to mean 1 microsecond, instead of 10000 microseconds.
+   Thanks to `Troy Grosfield >https://github.com/troygrosfield>`) for
+   bug report and patch.
+
 0.5.0
 
  * Raise a ValidationError when given an invalid time string. Thanks to
@@ -152,3 +159,4 @@ Thanks to the contributors to django-durationfield:
  * Jason Mayfield (https://github.com/jwmayfield)
  * silent1mezzo (https://github.com/silent1mezzo)
  * Adam Coddington (https://github.com/latestrevision)
+ * Troy Grosfield (https://github.com/troygrosfield)
