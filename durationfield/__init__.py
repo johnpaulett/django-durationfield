@@ -7,4 +7,4 @@ committed before the 1.2 feature deadline, this package attempts to make the
 patch into a reusable application that provides a ``DurationField``.
 
 """
-__version__ = '0.5.1'
+__version__ = '0.5.2dev'
