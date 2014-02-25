@@ -46,14 +46,14 @@ def str_to_timedelta(td_str):
     for key in time_groups.keys():
         if time_groups[key] is not None:
             is_valid = True
-
+            value = time_groups[key]
             if key == 'microseconds':
-                val = time_groups[key]
-                leading_zeros = len(val) - len(val.lstrip('0'))
-                time_groups[key] = int(val.lstrip('0')
-                                          .ljust(6 - leading_zeros, '0'))
-            else:
-                time_groups[key] = int(time_groups[key])
+                # When parsing time regex, make sure the microseconds value
+                # uses the correct number of digits. This must be correctly
+                # padded so 3.14 == 3.140 == 3.1400 == 3.14000 == 3.140000
+                # 3.14 == 3 seconds 140,000 microseconds
+                value = time_groups[key].ljust(6, '0')
+            time_groups[key] = int(value)
 
         else:
             time_groups[key] = 0
