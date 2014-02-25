@@ -52,7 +52,7 @@ def str_to_timedelta(td_str):
                 # uses the correct number of digits. This must be correctly
                 # padded so 3.14 == 3.140 == 3.1400 == 3.14000 == 3.140000
                 # 3.14 == 3 seconds 140,000 microseconds
-                value = time_groups[key].ljust(6, '0')
+                value = value.ljust(6, '0')
             time_groups[key] = int(value)
 
         else:
