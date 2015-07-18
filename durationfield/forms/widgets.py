@@ -1,11 +1,17 @@
 # -*- coding: utf-8 -*-
 from django.utils import formats, six
-from django.forms.util import flatatt
 from django.forms.widgets import TextInput
 from django.utils.safestring import mark_safe
 from django.utils.encoding import force_text
 from datetime import timedelta
 
+# This is an attempt to resolve a RemovedInDjango19Warning raised when using version 0.5.1 on Django 1.8
+# RemovedInDjango19Warning: The django.forms.util module has been renamed. Use django.forms.utils instead
+try:
+    from django.forms.utils import flatatt
+except ImportError:
+    from django.forms.util import flatatt
+    
 
 class DurationInput(TextInput):
     def render(self, name, value, attrs=None):
