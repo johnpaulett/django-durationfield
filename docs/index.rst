@@ -128,6 +128,10 @@ current versions of Django::
 Changelog
 ---------
 
+0.5.2
+
+ * Remove deprecation warning in Django 1.8
+
 0.5.1
 
  * Correctly parse microseconds. Previously, "0.01" would be incorrectly
