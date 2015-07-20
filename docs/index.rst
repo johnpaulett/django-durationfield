@@ -27,7 +27,8 @@ and report back any issues.
 Django Versions
 ---------------
 
-django-durationfield supports Django 1.4.2 through Django 1.5+, with the goal to
+django-durationfield supports Django 1.4.21, and Django 1.6.11
+through Django 1.8+, with the goal to
 target the currently support versions of Django releases in the future. So as
 the Django Project drops support for older versions, django-durationfield will
 do the same.
@@ -36,7 +37,7 @@ Django 1.4.2 is a minimum version as it introduced `compatibility features
 <https://docs.djangoproject.com/en/1.5/topics/python3/>`_ for
 supporting both Python 2 and Python 3.
 
-django-durationfield has support for Python 3.3.
+django-durationfield has support for Python 3.4.
 
 Please report any bugs or patches in improve version support.
 
