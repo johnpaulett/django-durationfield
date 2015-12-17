@@ -1,6 +1,6 @@
 from django.core.exceptions import ValidationError
 from django.test import TestCase
-from django.utils import six, unittest
+from django.utils import six
 from .models import (
     TestModel,
     TestNullableModel,
@@ -9,6 +9,8 @@ from .models import (
 )
 from durationfield.utils import timestring
 from datetime import timedelta
+
+import unittest
 
 
 class DurationFieldTests(TestCase):
