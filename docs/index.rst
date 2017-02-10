@@ -1,6 +1,16 @@
 django-durationfield
 ====================
 
+
+.. warning::
+
+   Django 1.8 introduced a native `DurationField <https://docs.djangoproject.com/en/1.10/ref/models/fields/#durationfield>`_.
+   It is highly recommended to Django's DurationField instead of this
+   reusable app, as ongoing maintenance of this app is likely to end.
+
+   Currently there is no automatic migration path from django-durationfield
+   to Django's DurationField, but pull requests are welcome.
+
 A reusable application for a DurationField in Django.
 
 This reusable app was conceived as a temporary solution for an old request to add
@@ -28,7 +38,7 @@ Django Versions
 ---------------
 
 django-durationfield supports Django 1.4.21, and Django 1.6.11
-through Django 1.8+, with the goal to
+through Django 1.10+, with the goal to
 target the currently support versions of Django releases in the future. So as
 the Django Project drops support for older versions, django-durationfield will
 do the same.
@@ -37,7 +47,7 @@ Django 1.4.2 is a minimum version as it introduced `compatibility features
 <https://docs.djangoproject.com/en/1.5/topics/python3/>`_ for
 supporting both Python 2 and Python 3.
 
-django-durationfield has support for Python 3.4.
+django-durationfield has support for Python 3.4 & 3.5.
 
 Please report any bugs or patches in improve version support.
 

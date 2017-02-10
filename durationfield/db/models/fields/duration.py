@@ -2,7 +2,6 @@
 from datetime import timedelta
 from django.core import exceptions
 from django.db.models.fields import Field
-from django.db import models
 from django.utils import six
 from django.utils.translation import ugettext_lazy as _
 from django.utils.encoding import smart_text
@@ -10,13 +9,15 @@ from django.utils.encoding import smart_text
 from durationfield.utils.timestring import str_to_timedelta
 from durationfield.forms.fields import DurationField as FDurationField
 
+from . import compat
+
 try:
     from south.modelsinspector import add_introspection_rules
 except ImportError:
     add_introspection_rules = None
 
 
-class DurationField(six.with_metaclass(models.SubfieldBase, Field)):
+class DurationField(Field):
     """
     A duration field is used
     """
@@ -94,6 +95,16 @@ class DurationField(six.with_metaclass(models.SubfieldBase, Field)):
                 raise exceptions.ValidationError(self.default_error_messages['invalid'])
 
         raise exceptions.ValidationError(self.default_error_messages['unknown_type'])
+
+    def from_db_value(self, value, *args, **kwargs):
+        # For Django 1.10+
+        return self.to_python(value)
+
+    def contribute_to_class(self, cls, name):
+        # Retain to_python behaviour for < Django 1.8 with removal
+        # of SubfieldBase
+        super(DurationField, self).contribute_to_class(cls, name)
+        setattr(cls, name, compat.Creator(self))
 
     def formfield(self, **kwargs):
         defaults = {'form_class': FDurationField}
