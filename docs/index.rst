@@ -138,6 +138,10 @@ current versions of Django::
 Changelog
 ---------
 
+0.5.3
+
+ * Add support for Django 1.10.
+
 0.5.2
 
  * Remove deprecation warning in Django 1.8
