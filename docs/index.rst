@@ -138,6 +138,11 @@ current versions of Django::
 Changelog
 ---------
 
+0.5.4
+
+ * Handle cases when database returns a :py:cls:`decimal.Decimal` under
+   Django 1.10. Cast the Decimal to a float (may be a lossy conversion)
+
 0.5.3
 
  * Add support for Django 1.10.

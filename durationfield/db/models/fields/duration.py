@@ -11,6 +11,8 @@ from durationfield.forms.fields import DurationField as FDurationField
 
 from . import compat
 
+import decimal
+
 try:
     from south.modelsinspector import add_introspection_rules
 except ImportError:
@@ -85,6 +87,12 @@ class DurationField(Field):
 
         if isinstance(value, six.integer_types):
             return timedelta(microseconds=value)
+
+        # As of Django 1.10, it appears that during some aggregation operations
+        # we may receive decimal.Decimal instances via from_db_value.
+        # WARNING: potentially lossy conversion
+        if isinstance(value, decimal.Decimal):
+            return timedelta(microseconds=float(value))
 
         # Try to parse the value
         str_val = smart_text(value)
