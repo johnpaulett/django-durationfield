@@ -138,6 +138,13 @@ current versions of Django::
 Changelog
 ---------
 
+0.5.5
+
+ * Add Django 1.11 support thanks to `Anton Linevych
+   <https://github.com/linevich>`_. However, recommend future projects use
+   Django's native `DurationField
+   <https://docs.djangoproject.com/en/1.10/ref/models/fields/#durationfield>`_
+
 0.5.4
 
  * Handle cases when database returns a :py:cls:`decimal.Decimal` under
@@ -155,7 +162,7 @@ Changelog
 
  * Correctly parse microseconds. Previously, "0.01" would be incorrectly
    interpreted to mean 1 microsecond, instead of 10000 microseconds.
-   Thanks to `Troy Grosfield >https://github.com/troygrosfield>`) for
+   Thanks to `Troy Grosfield >https://github.com/troygrosfield>`_) for
    bug report and patch.
 
 0.5.0
@@ -184,3 +191,4 @@ Thanks to the contributors to django-durationfield:
  * silent1mezzo (https://github.com/silent1mezzo)
  * Adam Coddington (https://github.com/latestrevision)
  * Troy Grosfield (https://github.com/troygrosfield)
+ * Anton Linevych (https://github.com/linevich>)
