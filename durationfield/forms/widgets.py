@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from django import VERSION
 from django.utils import formats, six
 from django.forms.widgets import TextInput
 from django.utils.safestring import mark_safe
@@ -14,14 +15,17 @@ except ImportError:
 
 
 class DurationInput(TextInput):
-    def render(self, name, value, attrs=None):
+    def render(self, name, value, attrs=None, **kwargs):
         """
         output.append(u'<li>%(cb)s<label%(for)s>%(label)s</label></li>' % {"for": label_for, "label": option_label, "cb": rendered_cb})
         """
         if value is None:
             value = ''
+        if VERSION[0] == 1 and VERSION[1] < 11:
+            final_attrs = self.build_attrs(attrs, type=self.input_type, name=name)
+        else:
+            final_attrs = self.build_attrs(base_attrs=attrs)
 
-        final_attrs = self.build_attrs(attrs, type=self.input_type, name=name)
         if value != '':
             # Only add the 'value' attribute if a value is non-empty.
             if isinstance(value, six.integer_types):
